@@ -1,50 +1,51 @@
 Simple illustration of upgradable smart contracts
 
-1. Get storage address from Registry
+1. Set Current Logic contract in Registry
 
 ```
-Registry.deployed().then(ins=>{ins.storage_contract().then(res=>{console.log(res)})})
+Registry.at(Registry.address).setLogicContract(LogicOne.address)
 ```
 
-2. Get storage contract from Current Logic Contract
+2. Check logic_contract address in Registry
 
 ```
-LogicOne.deployed().then(ins => { ins.s().then(res => {console.log(res)}) })
+Registry.at(Registry.address).logic_contract()
 ```
 
-3. Get val from storage
+3. Update Registry storage from LogicOne
 
 ```
-Storage.at(storage_address).getVal()
+LogicOne.at(Registry.address).setVal2(2)
+// Check value: value should be 4
+LogicOne.at(Registry.address).val()
+// check owner val
+Registry.at(Registry.address).owner()
 ```
 
-
-4. Set Current Logic contract in Registry
-
-```
-Registry.deployed().then(ins => {ins.setLogicContract(LogicOne.address)})
-```
-
-5. Get current Logic contract from storage
+5. Change logic layer to LogicTwo
 
 ```
-Storage.at(storage_address).logic_contract();
+Registry.at(Registry.address).setLogicContract(LogicTwo.address)
 ```
 
-6. SetVal from Current Logic Contract
-
+6. Set LogicTwo new value
 ```
-LogicCurrent.deployed().then(ins => { ins.setVal(2); } )
-```
-
-7. getVal from Storage
-
-```
-Storage.at(storage_address).getVal()
+LogicTwo.at(Registry.address).setNewVal(2)
+// check value: value should be 6
+LogicTwo.at(Registry.address).val()
 ```
 
-8. setVal from Registry
+7. LogicOne should still be able to set the val
 
 ```
-LogicOne.at(Registry.address).setVal()
+LogicOne.at(Registry.address).setVal(1)
+// check value: value should be 2
+LogicOne.at(Registry.address).val()
+```
+
+8. Get all Registry logs
+
+```
+var events = Registry.at(Registry.address).allEvents({fromBlock: 0, toBlock: 'latest', event: 'OwnerCalled'});
+events.get(function(error, logs){ console.log(logs) });
 ```

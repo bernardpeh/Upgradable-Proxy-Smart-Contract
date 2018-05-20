@@ -1,7 +1,7 @@
-var LogicOne = artifacts.require("./LogicOne.sol");
+var LogicTwo = artifacts.require("./LogicTwo.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(LogicOne);
+  deployer.deploy(LogicTwo);
   /**
   deployer.then(async () => {
     let s = await Storage.deployed();
