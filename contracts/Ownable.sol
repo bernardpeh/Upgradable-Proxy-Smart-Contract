@@ -12,5 +12,6 @@ contract Ownable {
     require(msg.sender == owner);
     _;
   }
+
 }
 

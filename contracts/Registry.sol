@@ -3,7 +3,6 @@ pragma solidity ^0.4.21;
 import './Ownable.sol';
 import './Storage.sol';
 
-// https://blog.indorse.io/ethereum-upgradeable-smart-contract-strategies-456350d0557c
 contract Registry is Storage, Ownable {
 
     address public logic_contract;
@@ -14,13 +13,13 @@ contract Registry is Storage, Ownable {
         return true;
     }
 
-    // proxy fall back is so that we can access all admin functions in the storage contract
+    // fall back function
     function () payable public {
 
         address target = logic_contract;
 
         assembly {
-            // Copy the data sent to the memory address starting 0x40
+            // Copy the data sent to the memory address starting free mem position
             let ptr := mload(0x40)
             calldatacopy(ptr, 0, calldatasize)
 
@@ -28,7 +27,6 @@ contract Registry is Storage, Ownable {
             let result := delegatecall(gas, target, ptr, calldatasize, 0, 0)
 
             // Copy the data returned by the proxied call to memory
-            // http://solidity.readthedocs.io/en/v0.4.24/assembly.html
             let size := returndatasize
             returndatacopy(ptr, 0, size)
 
